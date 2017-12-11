@@ -6,7 +6,9 @@ let home = async (ctx, next) => {
   ctx.response.body = `<p>${ctx.params.user}</p>`
 }
 let login = async (ctx, next) => {
-  ctx.response.body = `<form method="post" action="/api/login">
+  ctx.response.body = `
+<link rel="stylesheet" href="/static/css/style.css">
+<form method="post" action="/api/login">
     UserName: <input name="userName" type="text">
     Password: <input name="password" type="text">
     <input type="submit" value="提交">
