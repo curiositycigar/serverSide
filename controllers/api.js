@@ -1,6 +1,7 @@
 /**
  * Created by YOU on 2017/12/8.
  */
+const sendMail = require('../modules/mailSend.js')
 
 let apiLogin = async (ctx, next) => {
   let responseData = ''
@@ -11,7 +12,24 @@ let apiLogin = async (ctx, next) => {
   }
   ctx.response.body = responseData
 }
+let apiSendMail = async (ctx, next) => {
+  let responseData = ''
+  if (ctx.request.body.title && ctx.request.body.addresses) {
+    await sendMail({
+      title: ctx.request.body.title,
+      addresses: ctx.request.body.addresses,
+    }).then(function (info) {
+      responseData = `<p>Mail send Successfully!</p>`
+    }).catch(function (err) {
+      responseData = `<p>Mail send Failed!</p>`
+    })
+  } else {
+    responseData = `<p>Title and Address is required!</p>`
+  }
+  ctx.response.body = responseData
+}
 
 module.exports = {
-  'POST#/api/login': apiLogin
+  'POST#/api/login': apiLogin,
+  'POST#/api/sendMail': apiSendMail,
 }
