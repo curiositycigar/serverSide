@@ -10,12 +10,12 @@ let transporter = nodemailer.createTransport({
     pass: 'pnirmpcfqwdabagi'
   }
 })
-let mailOptions = {
-  from: '1255828611@qq.com',
-  to: 'you11098@163.com',
-  subject: 'nodemailer邮件发送测试',
-  html: `<h2>这是一个测试邮件，收到请忽略！</h2>`
-}
+// let mailOptions = {
+//   from: '1255828611@qq.com',
+//   to: 'you11098@163.com',
+//   subject: 'nodemailer邮件发送测试',
+//   html: `<h2>这是一个测试邮件，收到请忽略！</h2>`
+// }
 
 module.exports = function (obj) {
   return new Promise(function (resolve, reject) {
