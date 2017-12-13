@@ -3,6 +3,7 @@
  */
 const path = require('path')
 const fs = require('fs')
+const mime = require('mime')
 
 function staticFiles(url, dir) {
   return async (ctx, next) => {
@@ -11,6 +12,7 @@ function staticFiles(url, dir) {
       let fp = path.join(dir, rPath.substring(url.length))
       console.log('staticPath: ', fp)
       try {
+        ctx.response.type = mime.getType(fp)
         ctx.response.body = fs.readFileSync(fp)
       } catch (e) {
         ctx.response.status = 404
