@@ -28,6 +28,9 @@ let apiSendMail = async (ctx, next) => {
   }
   ctx.response.body = responseData
 }
+let apiRegister = async (ctx, next) => {
+  
+}
 
 module.exports = {
   'POST#/api/login': apiLogin,
