@@ -2,7 +2,11 @@
  * Created by YOU on 2017/12/8.
  */
 const sendMail = require('../modules/mailSend.js')
-
+const {
+  UnverifiedUser,
+  User,
+  Article,
+} = require('../modules/db')
 let apiLogin = async (ctx, next) => {
   let responseData = ''
   if (ctx.request.body.userName && ctx.request.body.userName === ctx.request.body.password) {
@@ -29,10 +33,41 @@ let apiSendMail = async (ctx, next) => {
   ctx.response.body = responseData
 }
 let apiRegister = async (ctx, next) => {
-  
+  let params = ctx.request.body
+  let responseData = ''
+  if (params.userName && params.password && params.mail) {
+    let user = new UnverifiedUser({
+      userName: params.userName,
+      password: params.password,
+      mail: params.mail,
+    })
+    await new Promise(function (resolve, reject) {
+      user.save((err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve('保存成功')
+        }
+      })
+    }).then(function () {
+      responseData = `<p>Save Successfully!</p>`
+    })
+  } else {
+    responseData = `<p>Params is miss!</p>`
+  }
+  await sendMail({
+    title: params.userName + ', 请确认您的邮箱地址！',
+    addresses: params.mail,
+  }).then(function (info) {
+    console.log('Mail Send for:', params.userName, params.mail)
+  }).catch(function (err) {
+    console.log('Mail Send failed:', err)
+  })
+  ctx.response.body = responseData
 }
 
 module.exports = {
   'POST#/api/login': apiLogin,
   'POST#/api/sendMail': apiSendMail,
+  'POST#/api/Register': apiRegister,
 }

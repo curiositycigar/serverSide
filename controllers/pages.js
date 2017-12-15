@@ -23,10 +23,21 @@ let mail = async (ctx, next) => {
     <input type="submit" value="提交">
   </form>`
 }
+let register = async (ctx, next) => {
+  ctx.response.body = `
+<link rel="stylesheet" href="/static/css/style.css">
+<form method="post" action="/api/Register">
+    <label for="userName">userName:</label> <input id="userName" name="userName" type="text"><br/><br/>
+    <label for="password">password:</label> <input id="password" name="password" type="text"><br/><br/>
+    <label for="mail">mail:</label> <input id="mail" name="mail" type="text"><br/><br/>
+    <input type="submit" value="提交">
+  </form>`
+}
 let root = async (ctx, next) => {
   ctx.response.body = `
     <a href="/login">login</a>
     <a href="/mail">mail</a>
+    <a href="/register">register</a>
     <p>Index</p>
   `
 }
@@ -35,5 +46,6 @@ module.exports = {
   'GET#/home:user': home,
   'GET#/login': login,
   'GET#/mail': mail,
+  'GET#/register': register,
   'GET#/': root,
 }
