@@ -7,6 +7,7 @@ const {
   User,
   Article,
 } = require('../modules/db')
+// 登录
 let apiLogin = async (ctx, next) => {
   let responseData = ''
   if (ctx.request.body.userName && ctx.request.body.userName === ctx.request.body.password) {
@@ -16,6 +17,7 @@ let apiLogin = async (ctx, next) => {
   }
   ctx.response.body = responseData
 }
+// 邮件
 let apiSendMail = async (ctx, next) => {
   let responseData = ''
   if (ctx.request.body.title && ctx.request.body.addresses) {
@@ -32,6 +34,7 @@ let apiSendMail = async (ctx, next) => {
   }
   ctx.response.body = responseData
 }
+// 注册
 let apiRegister = async (ctx, next) => {
   let params = ctx.request.body
   let responseData = ''

@@ -3,5 +3,5 @@
  */
 module.exports = {
   db: 'mongodb://192.168.212.41/serverSide',
-  preUri: ['static', 'api']
+  preUri: ['static', 'api', 'register', 'login', 'mail']
 }
