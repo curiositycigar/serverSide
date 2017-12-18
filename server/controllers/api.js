@@ -73,4 +73,5 @@ module.exports = {
   'POST#/api/login': apiLogin,
   'POST#/api/sendMail': apiSendMail,
   'POST#/api/Register': apiRegister,
+  'POT#/api/Register': apiRegister,
 }
