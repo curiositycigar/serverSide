@@ -4,13 +4,36 @@
 module.exports = (Schema) => {
   console.log('Model user create!')
   return {
-    userName: String,
-    password: String,
-    mail: String,
-    description: String,
-    articlesCount: Number,
-    follows: Array,
-    createTime: Date,
-    lastLoginTime: Date,
+    userName: {
+      type: String,
+      unique: true,
+    },
+    password: {
+      type: String,
+    },
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    mail: {
+      type: String,
+      lowercase: true,
+      unique: true,
+    },
+    description: {
+      type: String,
+    },
+    articlesCount: {
+      type: Number,
+    },
+    follows: {
+      type: Number,
+    },
+    createTime: {
+      type: Date,
+    },
+    lastLoginTime: {
+      type: Date,
+    },
   }
 }

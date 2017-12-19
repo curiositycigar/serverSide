@@ -22,8 +22,16 @@ module.exports = function () {
           router.get(url, mapping[key])
           console.log(`Get registered at:${url}`)
           break
+        case 'DELETE':
+          router.delete(url, mapping[key])
+          console.log(`DELETE registered at:${url}`)
+          break
+        case 'PUT':
+          router.put(url, mapping[key])
+          console.log(`PUT registered at:${url}`)
+          break
         default:
-          console.log(`In file:${path.join(dirName, '/controllers/' + f)}, invalid method got ${key}!`)
+          console.error(`In file:${path.join(dirName, '/controllers/' + f)}, invalid method got ${key}!`)
       }
     }
   }

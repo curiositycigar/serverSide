@@ -1,16 +1,22 @@
 /**
  * Created by YOU on 2017/12/14.
  */
-const db = require('../config/index').db
+const path = require('path')
+const mongoConfig = require('../config/index').mongo
 const mongoose = require('mongoose')
-const modelsCreater = require('../models/index')
+const fs = require('fs')
 mongoose.Promise = global.Promise
-let connection = mongoose.connect(db, {
-  useMongoClient: true,
-}).then(function (info) {
+mongoose.connect(mongoConfig.uri, mongoConfig.options).then(function (info) {
   console.log('Connect Successfully!')
 }).catch(function (e) {
   console.log('Error:', e)
 })
 
-module.exports = connection
+const files = fs.readdirSync(mongoConfig.modelDir).filter(f => f.endsWith('.js'))
+
+for (let file of files) {
+  console.log(path.join(mongoConfig.modelDir, file))
+  require(path.join(mongoConfig.modelDir, file))
+}
+
+module.exports = mongoose
