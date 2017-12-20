@@ -11,5 +11,8 @@ module.exports = {
     },
     modelDir: path.join(__dirname, '../../', 'server/models')
   },
-  preUri: ['static', 'api', 'register', 'login', 'mail']
+  controller: {
+    controllerDir: path.join(__dirname, '../../', 'server/controllers')
+  },
+  preUri: ['user']
 }

@@ -4,10 +4,10 @@
 const Koa = require('koa2')
 const app = new Koa()
 const bodyParser = require('koa-bodyparser')
-const staticFiles = require('./server/middleware/static.js')
-const redirect = require('./server/middleware/redirect.js')
-const routes = require(__dirname + '/controller.js')()
-const connection = require('./server/modules/db')
+const staticFiles = require('./server/middleware/static')
+const redirect = require('./server/middleware/redirect')
+const routes = require('./server/routes')()
+const mongoose = require('./server/db')
 const {
   preUri
 } = require('./server/config')
@@ -43,7 +43,7 @@ app.use(async (ctx, next) => {
 })
 app.use(bodyParser())
 // 重定向
-app.use(redirect(preUri))
+// app.use(redirect(preUri))
 // 静态文件
 app.use(staticFiles('/static', __dirname + '/static'))
 // 注册路由
