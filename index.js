@@ -21,12 +21,8 @@ const {
  const responseTime = require('koa-response-time')
  // 日志
  const logger = require('koa-logger')
- // pretty json
- const json = require('koa-json')
  // 压缩
  const compress = require('koa-compress')
- // 数据解析
- const bodyParser = require('koa-bodyparser')
  // 跨域
  const cors = require('kcors')
  const passport = require('koa-passport')
