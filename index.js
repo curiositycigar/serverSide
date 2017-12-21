@@ -13,7 +13,6 @@ const {
 } = require('./server/config')
 
 /*
-
  // session for Koa
  const session = require('koa-generic-session')
  const RedisStore = require('koa-redis')

@@ -2,13 +2,11 @@
  * Created by YOU on 2017/12/12.
  */
 // 邮件发送测试
+const mailConfig = require('../config').mail
 const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
-  service: 'qq',
-  auth: {
-    user: '1255828611@qq.com',
-    pass: 'pnirmpcfqwdabagi'
-  }
+  service: mailConfig.service,
+  auth: mailConfig.auth,
 })
 // let mailOptions = {
 //   from: '1255828611@qq.com',
@@ -21,11 +19,12 @@ module.exports = function (obj) {
   return new Promise(function (resolve, reject) {
     let addresses = obj.addresses
     let title = obj.title
+    let html = obj.html
     transporter.sendMail({
-      from: '1255828611@qq.com',
-      to: addresses,
-      subject: title,
-      html: `<h2>这是一个测试邮件，收到请忽略！</h2>`
+      from: mailConfig.auth.user,
+      to: addresses || '',
+      subject: title || '',
+      html: html || `<h2>这是一个测试邮件，收到请忽略！</h2>`
     }, function (err, info) {
       if (err) {
         reject(err)

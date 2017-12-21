@@ -21,27 +21,27 @@ exports.uploadImg = async (ctx, next) => {
   console.log('welcome article!')
 }
 // 所有人获取单篇文章
-exports.article = async (ctx, next) => {
+exports.getArticle = async (ctx, next) => {
   console.log('welcome article!')
 }
 
 // 获取文章列表
-exports.articleList = async (ctx, next) => {
+exports.getArticleList = async (ctx, next) => {
   console.log('welcome article!')
 }
-// 获取文章数量
-exports.articleCount = async (ctx, next) => {
+// 获取文章数量(根据标签或获取全部数量)
+exports.getArticleCount = async (ctx, next) => {
   console.log('welcome article!')
 }
 // 获取上一篇和下一篇
-exports.articlePreAndNext = async (ctx, next) => {
+exports.getPreAndNextArticle = async (ctx, next) => {
   console.log('welcome article!')
 }
 // 获取文章简要信息及封面图片
-exports.articleAbstract = async (ctx, next) => {
+exports.getArticleAbstract = async (ctx, next) => {
   console.log('welcome article!')
 }
 // 用户收藏/取消收藏(被收藏数++，文章ID增加给用户)
-exports.articleDoLove = async (ctx, next) => {
+exports.ArticleDoLove = async (ctx, next) => {
   console.log('welcome article!')
 }

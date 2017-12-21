@@ -1,21 +1,22 @@
 /**
  * Created by YOU on 2017/12/20.
  */
-const router = require('koa-router')()
+const koaRouter = require('koa-router')()
 const controller = require('./controller')
 // 无权限要求
-router.get('/userInfo/:username', controller.getUserInfo)
-router.post('/register', controller.register)
-router.get('/active/:random', controller.activeMail)
+koaRouter.get('/info/:name', controller.getUserInfo)
+koaRouter.post('/register', controller.register)
+koaRouter.get('/active/:code', controller.activeMail)
 // 登录
-router.post('/login', controller.login)
-router.post('/info', controller.getUserInfoBySelf)
-router.post('/update', controller.updateUserBySelf)
+koaRouter.post('/login', controller.login)
+koaRouter.post('/info', controller.getUserInfoBySelf)
+koaRouter.post('/update', controller.updateUserBySelf)
+koaRouter.post('/password', controller.changePasswordBySelf)
 // 登录且为管理员
-router.get('/userList', controller.getUserListByAdmin)
-router.post('/addUser', controller.addUserByAdmin)
-router.post('/updateUser', controller.getUserListByAdmin)
-router.post('/deleteUser', controller.deleteUserByAdmin)
-router.post('/ban', controller.banUserByAdmin)
+koaRouter.get('/admin/list', controller.getUserListByAdmin)
+koaRouter.post('/admin/add', controller.addUserByAdmin)
+koaRouter.post('/admin/userPassword', controller.changePasswordByAdmin)
+koaRouter.post('/admin/delete', controller.deleteUserByAdmin)
+koaRouter.post('/admin/ban', controller.banUserByAdmin)
 
-module.exports = router
+module.exports = koaRouter

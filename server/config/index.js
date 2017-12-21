@@ -5,8 +5,8 @@ const path = require('path')
 
 module.exports = {
   mongo: {
-    // uri: 'mongodb://192.168.212.41/serverSide',
-    uri: 'mongodb://192.168.158.128/serverSide',
+    uri: 'mongodb://192.168.212.41/serverSide',
+    // uri: 'mongodb://192.168.158.128/serverSide',
     options: {
       useMongoClient: true,
     },
@@ -14,6 +14,14 @@ module.exports = {
   },
   controller: {
     controllerDir: path.join(__dirname, '../../', 'server/controllers')
+  },
+  mail: {
+    service: 'qq',
+    auth: {
+      user: '1255828611@qq.com',
+      // 授权码
+      pass: 'pnirmpcfqwdabagi'
+    }
   },
   preUri: ['user']
 }
