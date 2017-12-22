@@ -1,6 +1,14 @@
 /**
  * Created by YOU on 2017/12/14.
  */
+const nameValidate = {
+  reg: /^[a-zA-Z][0-9a-zA-Z_]{4,14}$/,
+  message: '字母开头字母数字下划线组合5-14位',
+}
+const mailValidate = {
+  reg: /^[a-zA-Z0-9_]{3-20}@[a-zA-Z0-9]\.[a-z]{1,8}$/,
+  message: '邮箱地址不合法或不支持',
+}
 const crypto = require('crypto')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -32,8 +40,8 @@ let UserSchema = new Schema({
   },
   mail: {
     type: String,
-    lowercase: true,
     unique: true,
+    lowercase: true,
   },
   description: {
     type: String,
@@ -105,9 +113,29 @@ UserSchema
   .path('name')
   .validate({
     async validator(value) {
-      let user = await this.constructor.findOne({name: value})
+      return nameValidate.reg.test(value)
     },
-    message: 'name validate Failed!'
+    message: nameValidate.message,
+  }, {
+    async validator(value) {
+      let user = await this.constructor.findOne({name: value})
+      return !user
+    },
+    message: '用户名已存在',
+  })
+UserSchema
+  .path('mail')
+  .validate({
+    async validator(value) {
+      return mailValidate.reg.test(value)
+    },
+    message: mailValidate.message,
+  }, {
+    async validator(value) {
+      let mail = await this.constructor.findOne({mail: value})
+      return !mail
+    },
+    message: '邮箱已注册账号!',
   })
 
 UserSchema.methods = {

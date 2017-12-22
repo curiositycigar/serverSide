@@ -7,6 +7,8 @@ const controller = require('./controller')
 koaRouter.get('/info/:name', controller.getUserInfo)
 koaRouter.post('/register', controller.register)
 koaRouter.get('/active/:code', controller.activeMail)
+koaRouter.get('/isUserNameExist/:name', controller.isUserNameExist)
+koaRouter.get('/isMailExist/:mail', controller.isMailExist)
 // 登录
 koaRouter.post('/login', controller.login)
 koaRouter.post('/info', controller.getUserInfoBySelf)

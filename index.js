@@ -29,8 +29,21 @@ const {
  */
 
 app.on('error', (err, ctx) => {
-  console.error('server err:', err, ctx)
+  console.log('server err:', err.message)
 })
+
+// 简单错误处理
+app.use(async (ctx, next) => {
+  console.log('err handling!')
+  try {
+    await next()
+  } catch (e) {
+    ctx.status = e.status || 500
+    ctx.body = e
+    ctx.app.emit('error', e, ctx)
+  }
+})
+
 // 日志打印
 app.use(async (ctx, next) => {
   console.log(`Process on ${ctx.request.method}:${ctx.request.url}...`)

@@ -13,10 +13,21 @@ exports.getUserInfo = async (ctx, next) => {
     activeCode: randomCode(50),
     mail: 'you11098@163.com',
   })
-  await user.save()
-  ctx.response.body = ctx.params.name + 'Hellow'
+  try {
+    await user.save()
+  } catch (e) {
+    ctx.throw(e)
+  }
+  ctx.response.body = ctx.params.name + ' welcome!'
 }
-
+// 验证用户名
+exports.isUserNameExist = async (ctx, next) => {
+  ctx.response.body = ''
+}
+// 验证邮箱地址
+exports.isMailExist = async (ctx, next) => {
+  ctx.response.body = ''
+}
 // 注册
 exports.register = async (ctx, next) => {
   // 注册成功，发送验证邮件
