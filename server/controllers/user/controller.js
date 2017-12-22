@@ -7,18 +7,7 @@ const randomCode = require('../../utils').randomCode
 
 // 获取用户摘要(userName)
 exports.getUserInfo = async (ctx, next) => {
-  let user = new User({
-    name: ctx.params.name,
-    password: 'password',
-    activeCode: randomCode(50),
-    mail: 'you11098@163.com',
-  })
-  try {
-    await user.save()
-  } catch (e) {
-    ctx.throw(e)
-  }
-  ctx.response.body = ctx.params.name + ' welcome!'
+  let user = await User.findOne({name: ctx.params.name})
 }
 // 验证用户名
 exports.isUserNameExist = async (ctx, next) => {
@@ -30,6 +19,17 @@ exports.isMailExist = async (ctx, next) => {
 }
 // 注册
 exports.register = async (ctx, next) => {
+  let user = new User({
+    name: ctx.params.name,
+    password: 'password',
+    activeCode: randomCode(50),
+    mail: 'you11098@163.com',
+  })
+  try {
+    await user.save()
+  } catch (e) {
+    ctx.throw(e)
+  }
   // 注册成功，发送验证邮件
   ctx.response.body = 'welcome'
 }
