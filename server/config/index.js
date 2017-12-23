@@ -4,9 +4,12 @@
 const path = require('path')
 
 module.exports = {
+  server: {
+    host: 'http://192.168.212.61:3000/',
+  },
   mongo: {
-    // uri: 'mongodb://192.168.212.41/serverSide',
-    uri: 'mongodb://192.168.158.128/serverSide',
+    uri: 'mongodb://192.168.212.41/serverSide',
+    // uri: 'mongodb://192.168.158.128/serverSide',
     options: {
       useMongoClient: true,
     },

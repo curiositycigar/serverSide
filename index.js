@@ -33,6 +33,20 @@ app.on('error', (err, ctx) => {
 })
 
 // 简单错误处理
+app.context.success = (data, message) => {
+  return {
+    success: '请求成功' || message,
+    data: data
+  }
+}
+app.context.error = (data, message) => {
+  return {
+    error: '未知错误' || message,
+    data: data
+  }
+}
+
+// 简单错误处理
 app.use(async (ctx, next) => {
   console.log('err handling!')
   try {
@@ -50,8 +64,6 @@ app.use(async (ctx, next) => {
   await next()
 })
 app.use(bodyParser())
-// 重定向
-// app.use(redirect(preUri))
 // 静态文件
 app.use(staticFiles('/static', __dirname + '/static'))
 // 注册路由
@@ -59,5 +71,5 @@ app.use(routes)
 
 
 // 在端口3000监听:
-app.listen(3000)
+module.exports = app.listen(3000)
 console.log('app started at port 3000...')

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node index"
+    "run": "node index",
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +17,10 @@
     "mime": "^2.0.3",
     "mongoose": "^4.13.6",
     "nodemailer": "^4.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1",
+    "request": "^2.83.0",
+    "should": "^13.1.3"
   }
 }

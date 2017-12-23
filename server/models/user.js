@@ -6,7 +6,7 @@ const nameValidate = {
   message: '字母开头字母数字下划线组合5-14位',
 }
 const mailValidate = {
-  reg: /^[a-zA-Z0-9_]{3-20}@[a-zA-Z0-9]\.[a-z]{1,8}$/,
+  reg: /^[a-zA-Z0-9_]{3,20}@[a-zA-Z0-9]{1,10}\.[a-z]{1,8}$/,
   message: '邮箱地址不合法或不支持',
 }
 const crypto = require('crypto')
