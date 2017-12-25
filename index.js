@@ -48,7 +48,6 @@ app.context.error = (data, message) => {
 
 // 简单错误处理
 app.use(async (ctx, next) => {
-  console.log('err handling!')
   try {
     await next()
   } catch (e) {

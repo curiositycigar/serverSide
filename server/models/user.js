@@ -1,6 +1,12 @@
 /**
  * Created by YOU on 2017/12/14.
  */
+const crypto = require('crypto')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const {
+  encryptPassword,
+} = require('../utils')
 const nameValidate = {
   reg: /^[a-zA-Z][0-9a-zA-Z_]{4,14}$/,
   message: '字母开头字母数字下划线组合5-14位',
@@ -9,9 +15,6 @@ const mailValidate = {
   reg: /^[a-zA-Z0-9_]{3,20}@[a-zA-Z0-9]{1,10}\.[a-z]{1,8}$/,
   message: '邮箱地址不合法或不支持',
 }
-const crypto = require('crypto')
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 const avatar = 'url'
 let UserSchema = new Schema({
   name: {
@@ -21,6 +24,7 @@ let UserSchema = new Schema({
   hashedPassword: {
     type: String,
   },
+  salt: String,
   avatar: {
     type: String,
     default: avatar,
@@ -38,6 +42,10 @@ let UserSchema = new Schema({
   activeCode: {
     type: String,
   },
+  mailShow: {
+    type: Boolean,
+    default: true,
+  },
   mail: {
     type: String,
     unique: true,
@@ -47,12 +55,10 @@ let UserSchema = new Schema({
     type: String,
     default: '',
   },
-  articles: {
-    type: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Article'
-    }],
-    default: [],
+  // 收藏
+  loveArticlesShow: {
+    type: Boolean,
+    default: true,
   },
   loveArticles: {
     type: [{
@@ -61,12 +67,22 @@ let UserSchema = new Schema({
     }],
     default: [],
   },
+  // 关注
+  followsShow: {
+    type: Boolean,
+    default: true,
+  },
   follows: {
     type: [{
       type: Schema.Types.ObjectId,
       ref: 'User'
     }],
     default: [],
+  },
+  // 粉丝
+  fansShow: {
+    type: Boolean,
+    default: true,
   },
   fans: {
     type: [{
@@ -106,7 +122,42 @@ UserSchema
   .set(function (password) {
     this._password = password
     this.salt = this.makeSalt()
-    this.hashedPassword = this.encryptPassword(password)
+    this.hashedPassword = encryptPassword(password, this.salt)
+  })
+  .get(function () {
+    return this._password
+  })
+
+UserSchema
+  .virtual('userInfo')
+  .get(function () {
+    let loveArticles = this.loveArticles
+    let follows = this.follows
+    let fans = this.fans
+    let userInfo = {
+      name: this.name,
+      avatar: this.avatar,
+      level: this.level,
+      description: this.description,
+      power: this.power,
+      mailShow: this.mailShow,
+      loveArticlesShow: this.loveArticlesShow,
+      followsShow: this.followsShow,
+      fansShow: this.fansShow,
+    }
+    if (this.mailShow) {
+      userInfo.mail = this.mail
+    }
+    if (this.loveArticlesShow) {
+      userInfo.loveArticles = this.loveArticles
+    }
+    if (this.followsShow) {
+      userInfo.follows = this.follows
+    }
+    if (this.fansShow) {
+      userInfo.fans = this.fans
+    }
+    return userInfo
   })
 
 UserSchema
@@ -157,12 +208,6 @@ UserSchema.methods = {
   // 生成盐
   makeSalt() {
     return crypto.randomBytes(16).toString('base64')
-  },
-  //生成密码
-  encryptPassword: function (password) {
-    if (!password || !this.salt) return ''
-    var salt = new Buffer(this.salt, 'base64')
-    return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64')
   }
 }
 

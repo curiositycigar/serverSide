@@ -11,7 +11,8 @@ koaRouter.get('/isUserNameExist/:name', controller.isUserNameExist)
 koaRouter.get('/isMailExist/:mail', controller.isMailExist)
 // 登录
 koaRouter.post('/login', controller.login)
-koaRouter.post('/info', controller.getUserInfoBySelf)
+koaRouter.post('/logout', controller.logout)
+koaRouter.post('/fullInfo/:name', controller.getUserInfoBySelf)
 koaRouter.post('/update', controller.updateUserBySelf)
 koaRouter.post('/password', controller.changePasswordBySelf)
 // 登录且为管理员
