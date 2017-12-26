@@ -1,9 +1,14 @@
 /**
  * Created by YOU on 2017/12/5.
  */
+const fs = require('fs')
+const https = require('https')
 const Koa = require('koa2')
 const app = new Koa()
 const bodyParser = require('koa-bodyparser')
+const {
+  port,
+} = require('./server/config').server
 const staticFiles = require('./server/middleware/static')
 const redirect = require('./server/middleware/redirect')
 const routes = require('./server/routes')()
@@ -13,10 +18,6 @@ const {
 } = require('./server/config')
 
 /*
- // session for Koa
- const session = require('koa-generic-session')
- const RedisStore = require('koa-redis')
- //
  const responseTime = require('koa-response-time')
  // 日志
  const logger = require('koa-logger')
@@ -25,14 +26,13 @@ const {
  // 跨域
  const cors = require('kcors')
  const passport = require('koa-passport')
-
  */
 
 app.on('error', (err, ctx) => {
   console.log('server err:', err.message)
 })
 
-// 简单错误处理
+// 错误封装
 app.context.success = (data, message) => {
   return {
     success: '请求成功' || message,
@@ -70,5 +70,12 @@ app.use(routes)
 
 
 // 在端口3000监听:
-module.exports = app.listen(3000)
-console.log('app started at port 3000...')
+app.listen(port)
+https.createServer({
+  key: fs.readFileSync('./ca/test-key.pem'),
+  ca: fs.readFileSync('./ca/test-csr.pem'),
+  cert: fs.readFileSync('./ca/test-cert.pem'),
+  passphrase: '123456',
+}, app.callback()).listen(3001)
+console.log('http server started at port 3000...')
+console.log('https server started at port 3001...')

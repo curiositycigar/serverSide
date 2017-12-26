@@ -1,7 +1,6 @@
 /**
  * Created by YOU on 2017/12/20.
  */
-const jsonWebToken = require('jsonwebtoken')
 const config = require('../../config')
 const modelDir = config.mongo.modelDir
 const host = config.server.host
@@ -15,10 +14,6 @@ const {
 // 获取用户摘要(userName)
 exports.getUserInfo = async (ctx, next) => {
   console.log(ctx.params.name)
-  let token = ctx.cookies.get('token')
-  if (jsonWebToken.verify(token, 'secret')) {
-    console.log(jsonWebToken.decode(token))
-  }
   let user = null
   try {
     user = await User.findOne({name: ctx.params.name})
@@ -39,9 +34,7 @@ exports.isUserNameExist = async (ctx, next) => {
   } catch (e) {
     ctx.throw(e)
   }
-  ctx.response.body = ctx.success({
-    exist: !!user,
-  })
+  ctx.response.body = ctx.success(!!user)
 }
 // 验证邮箱地址
 exports.isMailExist = async (ctx, next) => {
@@ -51,9 +44,7 @@ exports.isMailExist = async (ctx, next) => {
   } catch (e) {
     ctx.throw(e)
   }
-  ctx.response.body = ctx.success({
-    exist: !!user,
-  })
+  ctx.response.body = ctx.success(!!user)
 }
 // 注册
 exports.register = async (ctx, next) => {
@@ -69,6 +60,7 @@ exports.register = async (ctx, next) => {
   } catch (e) {
     ctx.throw(e)
   }
+  // 注册成功，发送验证邮件
   // try {
   //   await sendMail({
   //     addresses: userData.mail,
@@ -80,7 +72,6 @@ exports.register = async (ctx, next) => {
   // } catch (e) {
   //   ctx.throw(e)
   // }
-  // 注册成功，发送验证邮件
   ctx.response.body = ctx.success('注册成功')
 }
 // 验证邮箱
@@ -91,56 +82,49 @@ exports.activeMail = async (ctx, next) => {
     ctx.throw(e)
   }
 }
-// 登录(设置token)
-exports.login = async (ctx, next) => {
-  let loginData = {
-    name: ctx.request.body.name,
-    // password: ctx.request.body.password,
-  }
-  let userData = null
-  try {
-    userData = await User.findOne(loginData)
-  } catch (e) {
-    ctx.throw(e)
-  }
-  if (userData) {
-    if (encryptPassword(ctx.request.body.password, userData.salt) === userData.hashedPassword) {
-      // 验证通过，设置token
-      console.log(userData)
-      let token = jsonWebToken.sign(
-        {data: userData},
-        'secret',
-        {
-          expiresIn: '1h',
-        },
-      )
-      ctx.cookies.set('token', token)
-      ctx.response.body = ctx.success(userData)
-    } else {
-      ctx.response.body = ctx.error('密码错误')
-    }
-  } else {
-    ctx.response.body = ctx.error('用户名不存在')
-  }
-}
-// 登出
-exports.logout = async (ctx, next) => {
-  ctx.response.body = ''
-}
 // 获取个人详细信息(token)
 exports.getUserInfoBySelf = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  ctx.response.body = ctx.state.user
 }
 // 更新用户信息
 exports.updateUserBySelf = async (ctx, next) => {
+  const userData = {
+    mailShow: ctx.response.body.mailShow,
+    loveArticlesShow: ctx.response.body.loveArticlesShow,
+    followsShow: ctx.response.body.followsShow,
+    fansShow: ctx.response.body.fansShow,
+    description: ctx.response.body.description,
+  }
+  ctx.response.body = 'welcome'
+}
+// 关注
+exports.doFollow = async (ctx, next) => {
+  // ctx.state.user.follows
+  ctx.response.body = 'welcome'
+}
+// 取消关注
+exports.undoFollow = async (ctx, next) => {
+  ctx.response.body = 'welcome'
+}
+// 收藏
+exports.doCollection = async (ctx, next) => {
+  ctx.response.body = 'welcome'
+}
+// 取消收藏
+exports.undoCollection = async (ctx, next) => {
   ctx.response.body = 'welcome'
 }
 // 修改密码
 exports.changePasswordBySelf = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  if (encryptPassword(ctx.request.body.oldPassword, ctx.state.user.salt) === ctx.state.user.hashedPassword) {
+    // 旧密码验证通过
+  }
 }
 
 // 后台获取用户列表（仅非管理员用户）
+exports.getUserInfoByAdmin = async (ctx, next) => {
+  ctx.response.body = 'welcome'
+}
 exports.getUserListByAdmin = async (ctx, next) => {
   ctx.response.body = 'welcome'
 }
@@ -150,7 +134,7 @@ exports.addUserByAdmin = async (ctx, next) => {
 }
 // 更新用户信息
 exports.changePasswordByAdmin = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  ctx.response.body = '接口不可用'
 }
 // 删除用户
 exports.deleteUserByAdmin = async (ctx, next) => {

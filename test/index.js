@@ -7,21 +7,27 @@ const request = require('request').defaults({jar: true})
 const assert = require('assert')
 let token = ''
 describe('用户状态测试!', function () {
-  // it('测试注册', (done) => {
-  //   request.post(host + '/user/register')
-  //     .form({
-  //       name: 'youwg',
-  //       password: 'password',
-  //       mail: 'you11098@163.com',
-  //     })
-  //     .on('response', function (res) {
-  //       let data = ''
-  //       assert.equal(res.statusCode, 200)
-  //       done()
-  //     })
-  // })
-  it('测试登录1', (done) => {
-    request.post(host + '/user/login')
+  it('测试注册', (done) => {
+    request.post(host + '/user/register')
+      .form({
+        name: 'youwg',
+        password: 'password',
+        mail: 'you11098@163.com',
+      })
+      .on('response', function (res) {
+        let data = ''
+        assert.equal(res.statusCode, 500)
+        res.on('data', function (trunk) {
+          data += trunk
+        })
+        res.on('end', function () {
+          console.log(data)
+        })
+        done()
+      })
+  })
+  it('测试正确用户登录', (done) => {
+    request.post(host + '/auth/login')
       .form({
         name: 'youwg',
         password: 'password',
@@ -39,7 +45,26 @@ describe('用户状态测试!', function () {
         done()
       })
   })
-  it('测试获取信息', (done) => {
+  it('测试不存在用户登录', (done) => {
+    request.cookie(token)
+    request.post(host + '/auth/login')
+      .form({
+        name: 'undefinedYouwg',
+        password: 'password1',
+      })
+      .on('response', function (res) {
+        let data = ''
+        assert.equal(res.statusCode, 400)
+        res.on('data', function (trunk) {
+          data += trunk
+        })
+        res.on('end', function () {
+          console.log(data)
+        })
+        done()
+      })
+  })
+  it('测试获取指定用户信息', (done) => {
     request.get(host + '/user/info/youwg')
       .on('response', function (res) {
         let data = ''
@@ -53,13 +78,8 @@ describe('用户状态测试!', function () {
         done()
       })
   })
-  it('测试登录2', (done) => {
-    request.cookie(token)
-    request.post(host + '/user/login')
-      .form({
-        name: 'youwg',
-        password: 'password1',
-      })
+  it('测试获取当前用户信息', (done) => {
+    request.get(host + '/user/me')
       .on('response', function (res) {
         let data = ''
         assert.equal(res.statusCode, 200)

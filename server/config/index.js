@@ -5,7 +5,8 @@ const path = require('path')
 
 module.exports = {
   server: {
-    host: 'http://192.168.212.61:3000/',
+    host: 'http://192.168.212.61/',
+    port: 3000,
   },
   mongo: {
     uri: 'mongodb://192.168.212.41/serverSide',
@@ -26,5 +27,9 @@ module.exports = {
       pass: 'pnirmpcfqwdabagi'
     }
   },
-  preUri: ['user']
+  preUri: ['user'],
+  auth: {
+    secret: 'secret',
+    expiresIn: '1h',
+  },
 }
