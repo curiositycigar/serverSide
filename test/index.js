@@ -5,91 +5,84 @@
 const host = 'http://127.0.0.1:3000'
 const request = require('request').defaults({jar: true})
 const assert = require('assert')
-let token = ''
+
+const register = (done) => {
+  request.post(host + '/user/register')
+    .form({
+      name: 'youwg',
+      password: 'password',
+      mail: 'you11098@163.com',
+    })
+    .on('response', function (res) {
+      let data = ''
+      assert.equal(res.statusCode, 500)
+      res.on('data', function (trunk) {
+        data += trunk
+      })
+      res.on('end', function () {
+        console.log(data)
+      })
+      done()
+    })
+}
+
+const login = function (name, password) {
+  return (done) => {
+    request.post(host + '/auth/login')
+      .form({
+        name: name,
+        password: password,
+      })
+      .on('response', function (res) {
+        let data = ''
+        assert.equal(res.statusCode, 200)
+        res.on('data', function (trunk) {
+          data += trunk
+        })
+        res.on('end', function () {
+          console.log(data)
+        })
+        done()
+      })
+  }
+
+}
+const getUserInfo = function (name) {
+  return (done) => {
+    request.get(host + '/user/info/' + name)
+      .on('response', function (res) {
+        let data = ''
+        assert.equal(res.statusCode, 200)
+        res.on('data', function (trunk) {
+          data += trunk
+        })
+        res.on('end', function () {
+          console.log(data)
+        })
+        done()
+      })
+  }
+}
+
+const selfInfo = (done) => {
+  request.get(host + '/user/me')
+    .on('response', function (res) {
+      let data = ''
+      assert.equal(res.statusCode, 200)
+      res.on('data', function (trunk) {
+        data += trunk
+      })
+      res.on('end', function () {
+        console.log(data)
+      })
+      done()
+    })
+}
+
 describe('用户状态测试!', function () {
-  it('测试注册', (done) => {
-    request.post(host + '/user/register')
-      .form({
-        name: 'youwg',
-        password: 'password',
-        mail: 'you11098@163.com',
-      })
-      .on('response', function (res) {
-        let data = ''
-        assert.equal(res.statusCode, 500)
-        res.on('data', function (trunk) {
-          data += trunk
-        })
-        res.on('end', function () {
-          console.log(data)
-        })
-        done()
-      })
-  })
-  it('测试正确用户登录', (done) => {
-    request.post(host + '/auth/login')
-      .form({
-        name: 'youwg',
-        password: 'password',
-      })
-      .on('response', function (res) {
-        token = res.headers['set-cookie'][0]
-        let data = ''
-        assert.equal(res.statusCode, 200)
-        res.on('data', function (trunk) {
-          data += trunk
-        })
-        res.on('end', function () {
-          console.log(data)
-        })
-        done()
-      })
-  })
-  it('测试不存在用户登录', (done) => {
-    request.cookie(token)
-    request.post(host + '/auth/login')
-      .form({
-        name: 'undefinedYouwg',
-        password: 'password1',
-      })
-      .on('response', function (res) {
-        let data = ''
-        assert.equal(res.statusCode, 400)
-        res.on('data', function (trunk) {
-          data += trunk
-        })
-        res.on('end', function () {
-          console.log(data)
-        })
-        done()
-      })
-  })
-  it('测试获取指定用户信息', (done) => {
-    request.get(host + '/user/info/youwg')
-      .on('response', function (res) {
-        let data = ''
-        assert.equal(res.statusCode, 200)
-        res.on('data', function (trunk) {
-          data += trunk
-        })
-        res.on('end', function () {
-          console.log(data)
-        })
-        done()
-      })
-  })
-  it('测试获取当前用户信息', (done) => {
-    request.get(host + '/user/me')
-      .on('response', function (res) {
-        let data = ''
-        assert.equal(res.statusCode, 200)
-        res.on('data', function (trunk) {
-          data += trunk
-        })
-        res.on('end', function () {
-          console.log(data)
-        })
-        done()
-      })
-  })
+  it('测试注册已注册', register)
+  it('测试正确用户登录', login('youwg', 'password'))
+  it('测试不存在用户登录', login('youwg123', 'password1'))
+  it('测试获取指定用户信息', getUserInfo('youwg'))
+  it('测试获取当前用户信息', selfInfo)
 })
