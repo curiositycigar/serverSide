@@ -1,21 +1,21 @@
 /**
  * Created by YOU on 2017/12/14.
  */
-const crypto = require('crypto')
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const {
   encryptPassword,
-} = require('../utils')
+} = require('../utils');
 const nameValidate = {
   reg: /^[a-zA-Z][0-9a-zA-Z_]{4,14}$/,
   message: '字母开头字母数字下划线组合5-14位',
-}
+};
 const mailValidate = {
   reg: /^[a-zA-Z0-9_]{3,20}@[a-zA-Z0-9]{1,10}\.[a-z]{1,8}$/,
   message: '邮箱地址不合法或不支持',
-}
-const avatar = 'url'
+};
+const avatar = 'url';
 let UserSchema = new Schema({
   name: {
     type: String,
@@ -79,17 +79,9 @@ let UserSchema = new Schema({
     }],
     default: [],
   },
-  // 粉丝
-  fansShow: {
-    type: Boolean,
-    default: true,
-  },
-  fans: {
-    type: [{
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    }],
-    default: [],
+  fansCount: {
+    type: Number,
+    default: 0,
   },
   createTime: {
     type: Date,
@@ -115,25 +107,25 @@ let UserSchema = new Schema({
     type: Number,
     default: 0,
   },
-})
+});
 
 UserSchema
   .virtual('password')
   .set(function (password) {
-    this._password = password
-    this.salt = this.makeSalt()
+    this._password = password;
+    this.salt = this.makeSalt();
     this.hashedPassword = encryptPassword(password, this.salt)
   })
   .get(function () {
     return this._password
-  })
+  });
 
 UserSchema
   .virtual('userInfo')
   .get(function () {
-    let loveArticles = this.loveArticles
-    let follows = this.follows
-    let fans = this.fans
+    let loveArticles = this.loveArticles;
+    let follows = this.follows;
+    let fans = this.fans;
     let userInfo = {
       name: this.name,
       avatar: this.avatar,
@@ -144,7 +136,7 @@ UserSchema
       loveArticlesShow: this.loveArticlesShow,
       followsShow: this.followsShow,
       fansShow: this.fansShow,
-    }
+    };
     if (this.mailShow) {
       userInfo.mail = this.mail
     }
@@ -158,7 +150,7 @@ UserSchema
       userInfo.fans = this.fans
     }
     return userInfo
-  })
+  });
 
 UserSchema
   .path('name')
@@ -169,11 +161,11 @@ UserSchema
     message: nameValidate.message,
   }, {
     async validator(value) {
-      let user = await this.constructor.findOne({name: value})
+      let user = await this.constructor.findOne({name: value});
       return !user
     },
     message: '用户名已存在',
-  })
+  });
 UserSchema
   .path('mail')
   .validate({
@@ -183,24 +175,24 @@ UserSchema
     message: mailValidate.message,
   }, {
     async validator(value) {
-      let mail = await this.constructor.findOne({mail: value})
+      let mail = await this.constructor.findOne({mail: value});
       return !mail
     },
     message: '邮箱已注册账号!',
-  })
+  });
 
 UserSchema.methods = {
   compareRole(power, compare) {
-    let selfPower = this.power
+    let selfPower = this.power;
     switch (compare) {
       case '>':
-        return this.power > power
+        return this.power > power;
       case '<':
-        return this.power < power
+        return this.power < power;
       case '>=':
-        return this.power >= power
+        return this.power >= power;
       case '<=':
-        return this.power <= power
+        return this.power <= power;
       default:
         return this.power === power
     }
@@ -209,6 +201,6 @@ UserSchema.methods = {
   makeSalt() {
     return crypto.randomBytes(16).toString('base64')
   }
-}
+};
 
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model('User', UserSchema);

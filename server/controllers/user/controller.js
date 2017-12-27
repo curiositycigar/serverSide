@@ -18,7 +18,7 @@ exports.getUserInfo = async (ctx, next) => {
   try {
     user = await User.findOne({name: ctx.params.name})
   } catch (e) {
-    ctx.throw(e)
+    return ctx.throw(e)
   }
   if (user) {
     return ctx.response.body = ctx.success(user.userInfo)
@@ -32,7 +32,7 @@ exports.isUserNameExist = async (ctx, next) => {
   try {
     user = await User.findOne({name: ctx.params.name})
   } catch (e) {
-    ctx.throw(e)
+    return ctx.throw(e)
   }
   ctx.response.body = ctx.success(!!user)
 };
@@ -42,7 +42,7 @@ exports.isMailExist = async (ctx, next) => {
   try {
     user = await User.findOne({mail: ctx.params.mail})
   } catch (e) {
-    ctx.throw(e)
+    return ctx.throw(e)
   }
   ctx.response.body = ctx.success(!!user)
 };
@@ -58,7 +58,7 @@ exports.register = async (ctx, next) => {
   try {
     await user.save()
   } catch (e) {
-    ctx.throw(e)
+    return ctx.throw(e)
   }
   // 注册成功，发送验证邮件
   // try {
@@ -79,7 +79,7 @@ exports.activeMail = async (ctx, next) => {
   try {
     await User.findOne({code: ctx.body.code})
   } catch (e) {
-    ctx.throw(e)
+    return ctx.throw(e)
   }
 };
 // 获取个人详细信息(token)
@@ -88,25 +88,49 @@ exports.getUserInfoBySelf = async (ctx, next) => {
 };
 // 更新用户信息
 exports.updateUserBySelf = async (ctx, next) => {
-  const userData = {
-    mailShow: ctx.response.body.mailShow,
-    loveArticlesShow: ctx.response.body.loveArticlesShow,
-    followsShow: ctx.response.body.followsShow,
-    fansShow: ctx.response.body.fansShow,
-    description: ctx.response.body.description,
-  };
-  ctx.response.body = 'welcome'
+  let result = null;
+  let userData = {};
+  ctx.request.body.mailShow !== undefined ? userData.mailShow = ctx.request.body.mailShow : '';
+  ctx.request.body.loveArticlesShow !== undefined ? userData.loveArticlesShow = ctx.request.body.loveArticlesShow : '';
+  ctx.request.body.followsShow !== undefined ? userData.followsShow = ctx.request.body.followsShow : '';
+  ctx.request.body.fansShow !== undefined ? userData.fansShow = ctx.request.body.fansShow : '';
+  ctx.request.body.description !== undefined ? userData.description = ctx.request.body.description : '';
+  console.log(userData);
+  if (Object.keys(userData).length <= 0) {
+    return ctx.throw(400, '请提交正确数据')
+  } else {
+    try {
+      result = await User.update({_id: ctx.state.user._id}, {$set: userData})
+    } catch (e) {
+      return ctx.throw(e)
+    }
+    console.log(result);
+    ctx.response.body = ctx.success(result)
+  }
 };
-// 关注
+// 关注（批量操作需涉及事务）
 exports.doFollow = async (ctx, next) => {
-  // ctx.state.user.follows
-  ctx.response.body = 'welcome'
+  let id = ctx.params.id;
+  let follows = ctx.state.user.follows;
+  let result = null;
+  if (follows.indexOf(id) === -1) {
+    follows.push(id);
+    try {
+      result = await User.update({_id: ctx.state.user._id}, {$set: {follows}})
+    } catch (e) {
+      ctx.throw(e)
+    }
+    ctx.response.body = ctx.success(result)
+  } else {
+    return ctx.throw(400, '已关注')
+  }
+  //
 };
-// 取消关注
+// 取消关注(同关注)
 exports.undoFollow = async (ctx, next) => {
   ctx.response.body = 'welcome'
 };
-// 收藏
+// 收藏(可批量操作)
 exports.doCollection = async (ctx, next) => {
   ctx.response.body = 'welcome'
 };

@@ -1,7 +1,7 @@
 /**
  * Created by YOU on 2017/12/14.
  */
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   server: {
@@ -9,8 +9,8 @@ module.exports = {
     port: 3000,
   },
   mongo: {
-    // uri: 'mongodb://192.168.212.41/serverSide',
-    uri: 'mongodb://192.168.158.128/serverSide',
+    uri: 'mongodb://192.168.212.41/serverSide',
+    // uri: 'mongodb://192.168.158.128/serverSide',
     options: {
       useMongoClient: true,
     },
@@ -32,4 +32,4 @@ module.exports = {
     secret: 'secret',
     expiresIn: '1h',
   },
-}
+};
