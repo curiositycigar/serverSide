@@ -20,7 +20,7 @@ koaRouter.post('/doCollection/:id', authService.authenticated(), controller.doCo
 koaRouter.post('/undoCollection/:id', authService.authenticated(), controller.undoCollection);
 // 登录且为管理员
 koaRouter.get('/admin/user/:name', authService.authenticated(100), controller.getUserInfoByAdmin);
-koaRouter.get('/admin/list', authService.authenticated(100), controller.getUserListByAdmin);
+koaRouter.get('/admin/list', authService.authenticated(0), controller.getUserListByAdmin);
 koaRouter.post('/admin/add', authService.authenticated(100), controller.addUserByAdmin);
 koaRouter.post('/admin/userPassword', authService.authenticated(100), controller.changePasswordByAdmin);
 koaRouter.post('/admin/delete', authService.authenticated(100), controller.deleteUserByAdmin);

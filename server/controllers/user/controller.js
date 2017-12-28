@@ -195,12 +195,20 @@ exports.changePasswordBySelf = async (ctx, next) => {
 
 // 后台获取用户列表（管理员用户）//page\pageSize
 exports.getUserInfoByAdmin = async (ctx, next) => {
-  let skip = ((page - 1) * pageSize);
-  let count = await User.count();
-  console.log('count:', count)
+  ctx.response.body = 'welcome'
 };
 exports.getUserListByAdmin = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  let pageSize = ctx.request.query.pageSize || 10
+  let page = ctx.request.query.page || 1
+  let skip = ((page - 1) * pageSize);
+  let count = 0
+  try {
+    count = await User.count();
+  } catch (e) {
+    ctx.throw(e)
+  }
+  console.log('count:', count)
+  ctx.response.body = count
 };
 // 添加用户
 exports.addUserByAdmin = async (ctx, next) => {

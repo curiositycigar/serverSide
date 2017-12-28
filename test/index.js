@@ -63,6 +63,22 @@ const getUserInfo = function (name) {
       })
   }
 };
+const getUserList = function (query) {
+  return (done) => {
+    request.get(host + '/user/admin/list' + query)
+      .on('response', function (res) {
+        let data = '';
+        assert.equal(res.statusCode, 200);
+        res.on('data', function (trunk) {
+          data += trunk
+        });
+        res.on('end', function () {
+          console.log(data)
+        });
+        done()
+      })
+  }
+};
 
 const selfInfo = (done) => {
   request.get(host + '/user/me')
@@ -121,5 +137,6 @@ describe('用户状态测试!', function () {
   // it('测试获取指定用户信息', getUserInfo('youwg'))
   it('测试获取当前用户信息', selfInfo)
   // it('测试更新用户信息', update({}))
+  it('测试获取用户列表', getUserList('?pageSize=10&page=1'))
   // it('测试关注用户', doFollow({data: ['youwg', 'asdsad']}))
 });
