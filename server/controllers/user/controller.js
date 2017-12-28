@@ -124,32 +124,80 @@ exports.doFollow = async (ctx, next) => {
   } else {
     return ctx.throw(400, '已关注')
   }
-  //
 };
 // 取消关注(同关注)
 exports.undoFollow = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  let id = ctx.params.id;
+  let follows = ctx.state.user.follows;
+  let result = null;
+  let index = follows.indexOf(id);
+  if (index !== -1) {
+    follows = follows.splice(index, 0);
+    try {
+      result = await User.update({_id: ctx.state.user._id}, {$set: {follows}})
+    } catch (e) {
+      ctx.throw(e)
+    }
+    ctx.response.body = ctx.success(result)
+  } else {
+    return ctx.throw(400, '未关注此人')
+  }
 };
 // 收藏(可批量操作)
 exports.doCollection = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  let id = ctx.params.id;
+  let loveArticles = ctx.state.user.loveArticles;
+  let result = null;
+  if (loveArticles.indexOf(id) === -1) {
+    loveArticles.push(id);
+    try {
+      result = await User.update({_id: ctx.state.user._id}, {$set: {loveArticles}})
+    } catch (e) {
+      ctx.throw(e)
+    }
+    ctx.response.body = ctx.success(result)
+  } else {
+    return ctx.throw(400, '已收藏')
+  }
 };
 // 取消收藏
 exports.undoCollection = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  let id = ctx.params.id;
+  let loveArticles = ctx.state.user.loveArticles;
+  let result = null;
+  let index = loveArticles.indexOf(id);
+  if (index !== -1) {
+    loveArticles = loveArticles.splice(index, 0);
+    try {
+      result = await User.update({_id: ctx.state.user._id}, {$set: {loveArticles}})
+    } catch (e) {
+      ctx.throw(e)
+    }
+    ctx.response.body = ctx.success(result)
+  } else {
+    return ctx.throw(400, '未收藏此文章')
+  }
 };
 // 修改密码
 exports.changePasswordBySelf = async (ctx, next) => {
+  let result = null;
   if (encryptPassword(ctx.request.body.oldPassword, ctx.state.user.salt) === ctx.state.user.hashedPassword) {
     // 旧密码验证通过
+    try {
+      result = await User.update({_id: ctx.state.user._id}, {$set: {password: ctx.state.user.password}})
+    } catch (e) {
+      ctx.throw(e)
+    }
   } else {
     ctx.response.body = ctx.failure('原始密码错误')
   }
 };
 
-// 后台获取用户列表（仅非管理员用户）
+// 后台获取用户列表（管理员用户）//page\pageSize
 exports.getUserInfoByAdmin = async (ctx, next) => {
-  ctx.response.body = 'welcome'
+  let skip = ((page - 1) * pageSize);
+  let count = await User.count();
+  console.log('count:', count)
 };
 exports.getUserListByAdmin = async (ctx, next) => {
   ctx.response.body = 'welcome'
