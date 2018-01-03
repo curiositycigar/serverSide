@@ -31,5 +31,6 @@ module.exports = {
   auth: {
     secret: 'secret',
     expiresIn: '1h',
+    admin: 100,
   },
 };

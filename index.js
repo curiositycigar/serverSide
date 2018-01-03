@@ -64,7 +64,7 @@ app.use(async (ctx, next) => {
 });
 app.use(bodyParser());
 // 静态文件
-app.use(staticFiles('/static', __dirname + '/static'));
+// app.use(staticFiles('/', __dirname + '/static'));
 // 注册路由
 app.use(routes);
 

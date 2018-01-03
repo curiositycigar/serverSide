@@ -1,6 +1,7 @@
 /**
  * Created by YOU on 2017/12/20.
  */
+const admin = require('../../config').auth.admin;
 const koaRouter = require('koa-router')();
 const controller = require('./controller');
 const authService = require('../../auth/auth.service');
@@ -19,11 +20,11 @@ koaRouter.post('/undoFollow/:id', authService.authenticated(), controller.undoFo
 koaRouter.post('/doCollection/:id', authService.authenticated(), controller.doCollection);
 koaRouter.post('/undoCollection/:id', authService.authenticated(), controller.undoCollection);
 // 登录且为管理员
-koaRouter.get('/admin/user/:name', authService.authenticated(100), controller.getUserInfoByAdmin);
-koaRouter.get('/admin/list', authService.authenticated(100), controller.getUserListByAdmin);
-koaRouter.post('/admin/add', authService.authenticated(100), controller.addUserByAdmin);
-koaRouter.post('/admin/userPassword', authService.authenticated(100), controller.changePasswordByAdmin);
-koaRouter.post('/admin/delete', authService.authenticated(100), controller.deleteUserByAdmin);
-koaRouter.post('/admin/ban', authService.authenticated(100), controller.banUserByAdmin);
+koaRouter.get('/admin/user/:name', authService.authenticated(admin), controller.getUserInfoByAdmin);
+koaRouter.get('/admin/list', authService.authenticated(admin), controller.getUserListByAdmin);
+koaRouter.post('/admin/add', authService.authenticated(admin), controller.addUserByAdmin);
+koaRouter.post('/admin/userPassword', authService.authenticated(admin), controller.changePasswordByAdmin);
+koaRouter.post('/admin/delete', authService.authenticated(admin), controller.deleteUserByAdmin);
+koaRouter.get('/admin/ban/:name/:alive', authService.authenticated(admin), controller.banUserByAdmin);
 
 module.exports = koaRouter;

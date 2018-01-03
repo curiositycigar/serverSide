@@ -1,18 +1,19 @@
 /**
  * Created by YOU on 2017/12/20.
  */
-const koaRouter = require('koa-router')()
-const controller = require('./controller')
+const koaRouter = require('koa-router')();
+const controller = require('./controller');
+const authService = require('../../auth/auth.service');
 
-koaRouter.post('/add', controller.addArticle)
-koaRouter.post('/delete', controller.deleteArticle)
-koaRouter.post('/update', controller.updateArticle)
-koaRouter.post('/uploadImg', controller.uploadImg)
-koaRouter.get('/article/:id', controller.getArticle)
-koaRouter.get('/list', controller.getArticleList)
-koaRouter.get('/count', controller.getArticleCount)
-koaRouter.get('/preAndNext', controller.getPreAndNextArticle)
-koaRouter.get('/abstract', controller.getArticleAbstract)
-koaRouter.post('/love', controller.ArticleDoLove)
+koaRouter.post('/save', authService.authenticated(), controller.addArticle);
+koaRouter.get('/delete/:id', authService.authenticated(), controller.deleteArticle);
+koaRouter.post('/uploadImg', authService.authenticated(), controller.uploadImg);
+koaRouter.get('/article/:id', authService.authenticated(), controller.getArticle);
+koaRouter.post('/love', authService.authenticated(), controller.ArticleDoLove);
 
-module.exports = koaRouter
+koaRouter.get('/list', controller.getArticleList);
+koaRouter.get('/count', controller.getArticleCount);
+koaRouter.get('/preAndNext', controller.getPreAndNextArticle);
+koaRouter.get('/abstract', controller.getArticleAbstract);
+
+module.exports = koaRouter;

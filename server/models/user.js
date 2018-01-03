@@ -102,7 +102,6 @@ let UserSchema = new Schema({
     default: true,
   },
   // 超能力等级
-  // 等级高的可以管理等级低的
   power: {
     type: Number,
     default: 0,
@@ -182,21 +181,6 @@ UserSchema
   });
 
 UserSchema.methods = {
-  compareRole(power, compare) {
-    let selfPower = this.power;
-    switch (compare) {
-      case '>':
-        return this.power > power;
-      case '<':
-        return this.power < power;
-      case '>=':
-        return this.power >= power;
-      case '<=':
-        return this.power <= power;
-      default:
-        return this.power === power
-    }
-  },
   // 生成盐
   makeSalt() {
     return crypto.randomBytes(16).toString('base64')
