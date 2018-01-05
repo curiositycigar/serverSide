@@ -13,7 +13,7 @@ koaRouter.post('/love', authService.authenticated(), controller.ArticleDoLove);
 
 koaRouter.get('/list', controller.getArticleList);
 koaRouter.get('/count', controller.getArticleCount);
-koaRouter.get('/preAndNext', controller.getPreAndNextArticle);
+koaRouter.get('/preAndNext/:id/:tag', controller.getPreAndNextArticle);
 koaRouter.get('/abstract', controller.getArticleAbstract);
 
 module.exports = koaRouter;

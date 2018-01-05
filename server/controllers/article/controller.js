@@ -59,15 +59,39 @@ exports.getArticle = async (ctx, next) => {
 };
 // 获取文章列表 tag、page、pageSize
 exports.getArticleList = async (ctx, next) => {
-  Article.where({});
-  console.log('welcome article!')
+  let ArticleList = [];
+  let tag = ctx.request.body.tag;
+  let page = ctx.request.body.page;
+  let pageSize = ctx.request.body.pageSize;
+  let query = {};
+  if (!page || !pageSize) {
+    ctx.throw(400, '参数不合法')
+  }
+  let skip = ((page - 1) * pageSize);
+  if (tag) {
+    query = {tags: tag}
+  }
+  try {
+    ArticleList = await Article.find(tag).skip(skip).limit(pageSize)
+  } catch (e) {
+    ctx.throw(e)
+  }
+  ctx.response.body = ctx.success(ArticleList)
 };
 // 获取文章数量(根据标签或获取全部数量)
 exports.getArticleCount = async (ctx, next) => {
-  console.log('welcome article!')
+  let count = 0;
+  try {
+    count = await Article.count()
+  } catch (e) {
+    ctx.throw(e)
+  }
+  ctx.response.body = ctx.success(count)
 };
 // 获取上一篇和下一篇
 exports.getPreAndNextArticle = async (ctx, next) => {
+  let tag = ctx.params.tag;
+  let id = ctx.params.id;
   console.log('welcome article!')
 };
 // 获取文章简要信息及封面图片

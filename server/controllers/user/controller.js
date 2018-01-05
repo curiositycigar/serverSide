@@ -227,7 +227,7 @@ exports.getUserListByAdmin = async (ctx, next) => {
   // 如果skip大于count，返回最后一页
   let userList = [];
   try {
-    userList = User.find({}).skip(skip).limit(pageSize)
+    userList = await User.find({}).skip(skip).limit(pageSize)
   } catch (e) {
     ctx.throw(e)
   }
