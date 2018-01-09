@@ -278,7 +278,10 @@ exports.deleteUserByAdmin = async (ctx, next) => {
 exports.banUserByAdmin = async (ctx, next) => {
   let result;
   try {
-    result = await User.update({name: ctx.params.name}, {$set: {alive: ctx.params.alive}})
+    let banUser = await User.findOne({name: ctx.params.name});
+    if (banUser) {
+      result = await User.update({name: ctx.params.name}, {$set: {alive: !banUser.alive}})
+    }
   } catch (e) {
     ctx.throw(e)
   }

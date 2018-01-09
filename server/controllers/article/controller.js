@@ -28,11 +28,7 @@ exports.addArticle = async (ctx, next) => {
 exports.deleteArticle = async (ctx, next) => {
   let id = ctx.request.body.id;
   try {
-    await Article.remove({_id: id})
-  } catch (e) {
-    ctx.throw(e)
-  }
-  try {
+    await Article.remove({_id: id});
     await Comment.remove({articleID: id})
   } catch (e) {
     ctx.throw(e)

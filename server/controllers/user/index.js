@@ -25,6 +25,6 @@ koaRouter.get('/admin/list', authService.authenticated(admin), controller.getUse
 koaRouter.post('/admin/add', authService.authenticated(admin), controller.addUserByAdmin);
 koaRouter.post('/admin/userPassword', authService.authenticated(admin), controller.changePasswordByAdmin);
 koaRouter.post('/admin/delete', authService.authenticated(admin), controller.deleteUserByAdmin);
-koaRouter.get('/admin/ban/:name/:alive', authService.authenticated(admin), controller.banUserByAdmin);
+koaRouter.get('/admin/ban/:name', authService.authenticated(admin), controller.banUserByAdmin);
 
 module.exports = koaRouter;
