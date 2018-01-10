@@ -2,6 +2,7 @@
  * Created by YOU on 2017/12/5.
  */
 const fs = require('fs');
+const http = require('http');
 const https = require('https');
 const Koa = require('koa2');
 const app = new Koa();
@@ -23,10 +24,9 @@ const {
  const logger = require('koa-logger')
  // 压缩
  const compress = require('koa-compress')
- // 跨域
- const cors = require('kcors')
- const passport = require('koa-passport')
  */
+
+console.log('webServer started on ' + process.pid);
 
 app.on('error', (err, ctx) => {
   console.log('server err:', err.message)
@@ -69,13 +69,25 @@ app.use(bodyParser());
 app.use(routes);
 
 
-// 在端口3000监听:
-app.listen(port);
-https.createServer({
-  key: fs.readFileSync('./ca/test-key.pem'),
-  ca: fs.readFileSync('./ca/test-csr.pem'),
-  cert: fs.readFileSync('./ca/test-cert.pem'),
-  passphrase: '123456',
-}, app.callback()).listen(3001);
-console.log('http server started at port 3000...');
-console.log('https server started at port 3001...');
+// // 在端口3000监听:
+// app.listen(port);
+// https.createServer({
+//   key: fs.readFileSync('./ca/test-key.pem'),
+//   ca: fs.readFileSync('./ca/test-csr.pem'),
+//   cert: fs.readFileSync('./ca/test-cert.pem'),
+//   passphrase: '123456',
+// }, app.callback()).listen(3001)
+
+
+let server = http.createServer(app.callback());
+
+process.on('message', (msg, socket) => {
+  console.log(process.pid + ' is handling');
+  process.nextTick(() => {
+    socket.readable = socket.writable = true;
+    socket.resume();
+    socket.server = server;
+    server.emit('connection', socket);
+    socket.emit('connect')
+  })
+});
