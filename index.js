@@ -68,18 +68,14 @@ app.use(bodyParser());
 // 注册路由
 app.use(routes);
 
-
-// // 在端口3000监听:
-// app.listen(port);
-// https.createServer({
-//   key: fs.readFileSync('./ca/test-key.pem'),
-//   ca: fs.readFileSync('./ca/test-csr.pem'),
-//   cert: fs.readFileSync('./ca/test-cert.pem'),
-//   passphrase: '123456',
-// }, app.callback()).listen(3001)
-
-
 let server = http.createServer(app.callback());
+let httpsServer =
+  https.createServer({
+    key: fs.readFileSync('./ca/test-key.pem'),
+    ca: fs.readFileSync('./ca/test-csr.pem'),
+    cert: fs.readFileSync('./ca/test-cert.pem'),
+    passphrase: '123456',
+  }, app.callback());
 
 process.on('message', (msg, socket) => {
   console.log(process.pid + ' is handling');
