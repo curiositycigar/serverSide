@@ -69,21 +69,28 @@ app.use(bodyParser());
 app.use(routes);
 
 let server = http.createServer(app.callback());
-let httpsServer =
-  https.createServer({
-    key: fs.readFileSync('./ca/test-key.pem'),
-    ca: fs.readFileSync('./ca/test-csr.pem'),
-    cert: fs.readFileSync('./ca/test-cert.pem'),
-    passphrase: '123456',
-  }, app.callback());
+let httpsServer = https.createServer({
+  key: fs.readFileSync('./ca/test-key.pem'),
+  ca: fs.readFileSync('./ca/test-csr.pem'),
+  cert: fs.readFileSync('./ca/test-cert.pem'),
+  passphrase: '123456',
+}, app.callback());
 
 process.on('message', (msg, socket) => {
   console.log(process.pid + ' is handling');
-  process.nextTick(() => {
+  if (msg === 'http') {
+    process.nextTick(() => {
+      socket.readable = socket.writable = true;
+      socket.resume();
+      socket.server = server;
+      server.emit('connection', socket);
+      socket.emit('connect')
+    })
+  } else if (msg === 'https') {
     socket.readable = socket.writable = true;
     socket.resume();
-    socket.server = server;
-    server.emit('connection', socket);
+    socket.server = httpsServer;
+    httpsServer.emit('connection', socket);
     socket.emit('connect')
-  })
+  }
 });

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "run": "node index",
+    "master": "node master",
     "test": "mocha"
   },
   "author": "",

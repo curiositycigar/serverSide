@@ -16,6 +16,14 @@ net.createServer({
 }, (c) => {
   c.pause();
   let worker = workers.shift();
-  worker.send('c', c);
+  worker.send('http', c);
   workers.push(worker)
 }).listen(3002);
+net.createServer({
+  pauseOnConnect: true,
+}, (c) => {
+  c.pause();
+  let worker = workers.shift();
+  worker.send('https', c);
+  workers.push(worker)
+}).listen(3003);
