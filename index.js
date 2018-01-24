@@ -18,21 +18,13 @@ const {
   preUri
 } = require('./server/config');
 
-/*
- const responseTime = require('koa-response-time')
- // 日志
- const logger = require('koa-logger')
- // 压缩
- const compress = require('koa-compress')
- */
-
 console.log('webServer started on ' + process.pid);
 
 app.on('error', (err, ctx) => {
   console.log('server err:', err.message)
 });
 
-// 错误封装
+// 封装数据
 app.context.success = (data, message) => {
   return {
     success: '请求成功' || message,
@@ -46,7 +38,7 @@ app.context.failure = (data, message) => {
   }
 };
 
-// 简单错误处理
+// 错误处理
 app.use(async (ctx, next) => {
   try {
     await next()
