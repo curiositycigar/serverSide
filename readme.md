@@ -48,3 +48,5 @@ openssl req -new -key test-key.pem -out ca-csr.pem
 // 证书
 openssl x509 -req -in test-csr.pem -signkey ca-key.pem -out ca-cert.pem
 ```
+
+#### package-lock.json 中部分依赖不安全，删除package-lock.json
